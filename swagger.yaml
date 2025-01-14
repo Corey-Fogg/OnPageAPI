@@ -587,7 +587,6 @@ paths:
                     type: string
                   updatedValue:
                     type: string
-                    type: string
 components:
   securitySchemes:
     bearerAuth:
