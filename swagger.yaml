@@ -587,18 +587,6 @@ paths:
                     type: string
                   updatedValue:
                     type: string
-        '200':
-          description: Settings updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  updatedKey:
-                    type: string
-                  updatedValue:
                     type: string
 components:
   securitySchemes:
