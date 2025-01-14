@@ -266,13 +266,13 @@ paths:
       responses:
         '201':
           description: Group created successfully
-  /contacts/groups/{id}:
+  /contacts/groups/{groupId}:
     put:
       summary: Update a group
       tags:
         - Contacts
       parameters:
-        - name: id
+        - name: groupId
           in: path
           required: true
           schema:
@@ -290,7 +290,7 @@ paths:
       tags:
         - Contacts
       parameters:
-        - name: id
+        - name: groupId
           in: path
           required: true
           schema:
@@ -320,7 +320,7 @@ paths:
       responses:
         '200':
           description: Contact added to group
-  /contacts/groups/{groupId}/contacts/{contactId}:
+  /contacts/groups/{groupId}/contacts/{id}:
     delete:
       summary: Remove a contact from a group
       tags:
@@ -331,7 +331,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: contactId
+        - name: id
           in: path
           required: true
           schema:
@@ -397,6 +397,107 @@ paths:
       responses:
         '200':
           description: Administrator deleted successfully
+  /administrators/groups:
+    get:
+      summary: Get a list of administrators groups
+      tags:
+        - Administrators
+      responses:
+        '200':
+          description: List of administrators groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/AdministratorGroup'
+    post:
+      summary: Create an administrator group
+      tags:
+        - Administrators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdministratorGroup'
+      responses:
+        '201':
+          description: Administrator Group created successfully
+  /administrators/groups/{groupId}:
+    put:
+      summary: Update an administrator group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdministratorGroup'
+      responses:
+        '200':
+          description: Administrator Group updated successfully
+    delete:
+      summary: Delete an administrator group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Administrator Group deleted successfully
+        '404':
+          description: Administrator Group not found
+  /administrators/groups/{groupId}/administrators:
+    post:
+      summary: Add an Administrator to a group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                administratorId:
+                  type: string
+      responses:
+        '200':
+          description: Administrator added to group
+  /administrators/groups/{groupId}/administrators/{id}:
+    delete:
+      summary: Remove an Administrator from a group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Administrator removed from group
   /templates:
     get:
       summary: Get a list of templates
@@ -476,16 +577,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  onCallReminder:
-                    type: string
-                    enum: [Never, "30 Minutes", "60 Minutes"]
-                    description: Reminder setting for on-call notifications
-                  twoFactorRequired:
-                    type: string
-                    enum: ["Once per day", "Every Login", "Every 8 Hours"]
-                    description: Frequency of two-factor authentication requirements
+                $ref: '#/components/schemas/Setting'
     put:
       summary: Update settings
       tags:
@@ -494,30 +586,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                key:
-                  type: string
-                  enum: [onCallReminder, twoFactorRequired]
-                  description: The key of the setting to update
-                value:
-                  type: string
-                  description: The value to assign to the setting
-                  enum: [Never, "30 Minutes", "60 Minutes", "Once per day", "Every Login", "Every 8 Hours"]
+              $ref: '#/components/schemas/Setting'
       responses:
         '200':
           description: Settings updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  updatedKey:
-                    type: string
-                  updatedValue:
-                    type: string
 components:
   schemas:
     Page:
@@ -677,6 +749,10 @@ components:
         lastName:
           type: string
           description: Last name of the administrator
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdministratorGroup'
         superAdmin:
           type: boolean
           description: Indicates if the administrator has super admin privileges
@@ -725,6 +801,35 @@ components:
             editEscalationGroup:
               type: boolean
               description: Permission to edit escalation groups
+            viewSchedule:
+              type: boolean
+              description: Permission to view schedules
+            editSchedule:
+              type: boolean
+              description: Permission to edit schedules
+            viewReports:
+              type: boolean
+              description: Permission to view reports
+    AdministratorGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the Administrator Group
+        name:
+          type: string
+          description: Name of the Administrator Group
+    Setting:
+      type: object
+      properties:
+        onCallReminder:
+          type: string
+          enum: [Never, "30 Minutes", "60 Minutes"]
+          description: Reminder setting for on-call notifications
+        twoFactorRequired:
+          type: string
+          enum: ["Once per day", "Every Login", "Every 8 Hours"]
+          description: Frequency of two-factor authentication requirements
   securitySchemes:
     bearerAuth:
       type: http
