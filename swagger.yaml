@@ -509,9 +509,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                $ref: '#/components/schemas/Template'
     post:
       summary: Create a template
       tags:
@@ -520,12 +518,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                content:
-                  type: string
+              $ref: '#/components/schemas/Template'
       responses:
         '201':
           description: Template created successfully
@@ -544,12 +537,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                content:
-                  type: string
+              $ref: '#/components/schemas/Template'
       responses:
         '200':
           description: Template updated successfully
@@ -830,6 +818,26 @@ components:
           type: string
           enum: ["Once per day", "Every Login", "Every 8 Hours"]
           description: Frequency of two-factor authentication requirements
+    Template:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the template
+        syncToMobileDevices:
+          type: boolean
+          description: Indicates if the template is synced to mobile devices
+        subject:
+          type: string
+          description: Subject of the template
+        body:
+          type: string
+          description: Body content of the template
+        predefinedReplies:
+          type: array
+          items:
+            type: string
+          description: Array of predefined replies for the template
   securitySchemes:
     bearerAuth:
       type: http
