@@ -546,6 +546,15 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  onCallReminder:
+                    type: string
+                    enum: [Never, "30 Minutes", "60 Minutes"]
+                    description: Reminder setting for on-call notifications
+                  twoFactorRequired:
+                    type: string
+                    enum: ["Once per day", "Every Login", "Every 8 Hours"]
+                    description: Frequency of two-factor authentication requirements
     put:
       summary: Update settings
       tags:
@@ -558,11 +567,26 @@ paths:
               properties:
                 key:
                   type: string
+                  enum: [onCallReminder, twoFactorRequired]
                   description: The key of the setting to update
                 value:
                   type: string
                   description: The value to assign to the setting
+                  enum: [Never, "30 Minutes", "60 Minutes", "Once per day", "Every Login", "Every 8 Hours"]
       responses:
+        '200':
+          description: Settings updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  updatedKey:
+                    type: string
+                  updatedValue:
+                    type: string
         '200':
           description: Settings updated successfully
           content:
