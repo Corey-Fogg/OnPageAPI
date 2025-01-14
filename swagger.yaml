@@ -51,15 +51,48 @@ paths:
       responses:
         '200':
           description: Attachment deleted successfully
-  /page/replies:
+  /page/{id}/replies:
     get:
-      summary: Get replies to pages
+      summary: Get all replies to a page
       tags:
         - Page
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: List of replies
+          description: List of replies to the page
           content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+    post:
+      summary: Post a reply to a page
+      tags:
+        - Page
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reply:
+                  type: string
+                  description: The content of the reply
+      responses:
+        '201':
+          description: Reply posted successfully          content:
             application/json:
               schema:
                 type: array
