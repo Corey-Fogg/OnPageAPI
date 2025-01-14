@@ -14,13 +14,17 @@ paths:
         - Attachments
       responses:
         '200':
-          description: List of attachments
+          description: List of attachment IDs
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID of the attachment
     post:
       summary: Upload a new attachment
       tags:
@@ -35,8 +39,22 @@ paths:
                   type: string
                   format: binary
       responses:
-        '201':
-          description: Attachment uploaded successfully
+        '200':
+          description: Attachment uploaded successfully or failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates whether the upload was successful
+                  id:
+                    type: string
+                    description: The ID of the uploaded attachment (if successful)
+                  message:
+                    type: string
+                    description: Error message (if failed)
   /attachments/{id}:
     delete:
       summary: Delete an attachment
@@ -51,11 +69,20 @@ paths:
       responses:
         '200':
           description: Attachment deleted successfully
+        '404':
+          description: Attachment not found
   /page:
     get:
       summary: Get a list of pages
       tags:
         - Page
+      parameters:
+        - name: Search
+          in: query
+          required: false
+          schema:
+            type: string
+            description: The search string to look for in the subject, body, or recipients
       responses:
         '200':
           description: List of pages
@@ -64,7 +91,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
+                  $ref: '#/components/schemas/Page'
     post:
       summary: Create a page
       tags:
@@ -73,61 +100,12 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                message:
-                  type: object
-                  properties:
-                    subject:
-                      type: string
-                    body:
-                      type: string
-                    contacts:
-                      type: array
-                      items:
-                        type: string
-                    from:
-                      type: string
-                    priority:
-                      type: string
-                      enum: [HIGH, MEDIUM, LOW]
-                    attachments:
-                      type: array
-                      items:
-                        type: string
-                    possibleAnswers:
-                      type: array
-                      items:
-                        type: string
-                    callbackUri:
-                      type: string
+              $ref: '#/components/schemas/Page'
       responses:
         '201':
           description: Page created successfully
         '400':
-          description: Bad request
-  /page/search:
-    get:
-      summary: Search pages
-      tags:
-        - Page
-      parameters:
-        - name: query
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Search results for pages
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
+          description: Invalid request
   /page/{id}:
     get:
       summary: Get details of a specific page
@@ -141,31 +119,12 @@ paths:
             type: string
       responses:
         '200':
-          description: Page details
+          description: Details of the page
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Page'
   /page/{id}/replies:
-    get:
-      summary: Get all replies to a page
-      tags:
-        - Page
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: List of replies to the page
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
     post:
       summary: Post a reply to a page
       tags:
@@ -191,17 +150,18 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  replyId:
-                    type: string
-                    description: The ID of the created reply
-
+                $ref: '#/components/schemas/Reply'
   /contacts:
     get:
       summary: Get a list of contacts
       tags:
         - Contacts
+      parameters: 
+        - name: Search
+          in: query
+          required: false
+          schema: 
+            type: string
       responses:
         '200':
           description: List of contacts
@@ -210,7 +170,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
+                  $ref: '#/components/schemas/Contact'
     post:
       summary: Create a recipient
       tags:
@@ -219,35 +179,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
+              $ref: '#/components/schemas/Contact'
       responses:
         '201':
           description: Recipient created successfully
-  /contacts/search:
-    get:
-      summary: Search contacts
-      tags:
-        - Contacts
-      parameters:
-        - name: query
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Search results for contacts
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
   /contacts/status:
     get:
       summary: Get contact status
@@ -288,12 +223,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
+              $ref: '#/components/schemas/Contact'
       responses:
         '200':
           description: Recipient updated successfully
@@ -323,7 +253,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
+                  $ref: '#/components/schemas/Group'
     post:
       summary: Create a group
       tags:
@@ -332,10 +262,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/Group'
       responses:
         '201':
           description: Group created successfully
@@ -354,10 +281,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/Group'
       responses:
         '200':
           description: Group updated successfully
@@ -427,16 +351,8 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
-                  type: object
-              example:
-                administrators:
-                  - id: "string"
-                    email: "string"
-                    firstName: "string"
-                    lastName: "string"
-                    superAdmin: true
-                    phoneNumber: "string"
+                items: 
+                  $ref: '#/components/schemas/Administrator'
     post:
       summary: Create an administrator
       tags:
@@ -445,18 +361,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                superAdmin:
-                  type: boolean
-                phoneNumber:
-                  type: string
+              $ref: '#/components/schemas/Administrator'
       responses:
         '201':
           description: Administrator created successfully
@@ -475,18 +380,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                superAdmin:
-                  type: boolean
-                phoneNumber:
-                  type: string
+              $ref: '#/components/schemas/Administrator'
       responses:
         '200':
           description: Administrator updated successfully
@@ -625,6 +519,212 @@ paths:
                   updatedValue:
                     type: string
 components:
+  schemas:
+    Page:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: Message subject
+        body:
+          type: string
+          description: Message body (optional)
+        contacts:
+          type: array
+          items:
+            type: object
+            properties:
+              contactId:
+                type: string
+                description: Contact OPID
+              email:
+                type: string
+                description: Contact Email
+          description: List of Contacts (OPIDs)
+        from:
+          type: string
+          description: Message sender (free text, optional)
+        priority:
+          type: string
+          enum: [HIGH, LOW]
+          description: HIGH or LOW priority
+        attachments:
+          type: array
+          items:
+            type: string
+          description: Array of uploaded attachment IDs (optional)
+        possibleAnswers:
+          type: array
+          items:
+            type: string
+          description: Array of predefined answers for reply (optional, requires callbackUri)
+        callbackUri:
+          type: string
+          description: Message status callback URI (optional)
+        replies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reply'
+    Reply:
+      type: object
+      properties:
+        replyId:
+          type: string
+          description: The ID of the reply
+        reply:
+          type: string
+          description: The content of the reply
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the contact
+        opid:
+          type: string
+          description: OnPage ID for the contact
+        email:
+          type: string
+          format: email
+          description: Email address of the contact
+        status:
+          type: string
+          enum: [Online, TurnedOff, Offline]
+          description: Contact's Pager Status
+        firstName:
+          type: string
+          description: First name of the contact
+        lastName:
+          type: string
+          description: Last name of the contact
+        phoneNumber:
+          type: string
+          description: Phone number of the contact
+        groups:
+          type: array
+          items:
+            type: string
+          description: List of groups the contact belongs to
+        securedMessaging:
+          type: boolean
+          description: Indicates if secured messaging is enabled for the contact
+        sendRedundancy:
+          type: string
+          enum: [email, sms, ivr]
+          description: Redundancy method for secured messaging (if enabled)
+        sendRedundancyTime:
+          type: string
+          description: Time interval for redundancy in secured messaging
+        alwaysSendMessageCopy:
+          type: string
+          enum: [email, ivr]
+          description: Preferred method to always send a copy of the message
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the group
+        opid:
+          type: string
+          description: OnPage ID for the group
+        name:
+          type: string
+          description: Name of the group
+        contacts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of the contact
+              email:
+                type: string
+                format: email
+                description: Email of the contact
+          description: Array of contacts belonging to the group
+        escalation:
+          type: boolean
+          description: Indicates if escalation is enabled for the group
+        failoverInterval:
+          type: integer
+          description: Failover interval in minutes
+        failoverFactor:
+          type: string
+          enum: [delivered, read, replied]
+          description: Failover factor condition
+        sendFailReportTo:
+          type: string
+          format: email
+          description: Email to send fail reports
+        includeOriginalMessage:
+          type: boolean
+          description: Indicates if the original message should be included in failover notifications
+    Administrator:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the administrator
+        email:
+          type: string
+          format: email
+          description: Email address of the administrator
+        firstName:
+          type: string
+          description: First name of the administrator
+        lastName:
+          type: string
+          description: Last name of the administrator
+        superAdmin:
+          type: boolean
+          description: Indicates if the administrator has super admin privileges
+        phoneNumber:
+          type: string
+          description: Phone number of the administrator
+        canSelectAllContactsGroups:
+          type: boolean
+          description: Indicates if the administrator can select all contact groups
+        viewAllDispatchersContent:
+          type: boolean
+          description: Indicates if the administrator can view all dispatchers' content
+        permissions:
+          type: object
+          properties:
+            createGroup:
+              type: boolean
+              description: Permission to create groups
+            createEscalation:
+              type: boolean
+              description: Permission to create escalations
+            groupCreate:
+              type: boolean
+              description: Permission to create a group
+            contactDelete:
+              type: boolean
+              description: Permission to delete contacts
+            contactEdit:
+              type: boolean
+              description: Permission to edit contacts
+            contactAdd:
+              type: boolean
+              description: Permission to add contacts
+            contactToGroup:
+              type: boolean
+              description: Permission to add contacts to a group
+            removeContactFromGroup:
+              type: boolean
+              description: Permission to remove contacts from a group
+            deleteGroup:
+              type: boolean
+              description: Permission to delete groups
+            editGroup:
+              type: boolean
+              description: Permission to edit groups
+            editEscalationGroup:
+              type: boolean
+              description: Permission to edit escalation groups
   securitySchemes:
     bearerAuth:
       type: http
