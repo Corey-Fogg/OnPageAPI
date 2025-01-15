@@ -285,22 +285,8 @@ paths:
       responses:
         '200':
           description: Group updated successfully
-    delete:
-      summary: Delete a group
-      tags:
-        - Contacts
-      parameters:
-        - name: groupId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Group deleted successfully
-  /contacts/groups/{groupId}/contacts:
-    post:
-      summary: Add a contact to a group
+    patch:
+      summary: Update a group
       tags:
         - Contacts
       parameters:
@@ -314,15 +300,21 @@ paths:
           application/json:
             schema:
               type: object
-              properties:
-                contactId:
+              properties: 
+                op:
                   type: string
+                  enum: [add, remove]
+                path:
+                  type: string
+                  example: contacts
+                value:
+                  type: string
+                  example: opid
       responses:
         '200':
-          description: Contact added to group
-  /contacts/groups/{groupId}/contacts/{id}:
+          description: Group updated Successfully
     delete:
-      summary: Remove a contact from a group
+      summary: Delete a group
       tags:
         - Contacts
       parameters:
@@ -331,14 +323,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
-          description: Contact removed from group
+          description: Group deleted successfully
   /administrators:
     get:
       summary: Get a list of administrators
@@ -442,6 +429,34 @@ paths:
       responses:
         '200':
           description: Administrator Group updated successfully
+    patch:
+      summary: Update an administrator group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                op:
+                  type: string
+                  enum: [add, remove]
+                path:
+                  type: string
+                  example: administrators
+                value:
+                  type: string
+                  example: opid
+      responses:
+        '200':
+          description: Group updated Successfully
     delete:
       summary: Delete an administrator group
       tags:
@@ -457,47 +472,6 @@ paths:
           description: Administrator Group deleted successfully
         '404':
           description: Administrator Group not found
-  /administrators/groups/{groupId}/administrators:
-    post:
-      summary: Add an Administrator to a group
-      tags:
-        - Administrators
-      parameters:
-        - name: groupId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                administratorId:
-                  type: string
-      responses:
-        '200':
-          description: Administrator added to group
-  /administrators/groups/{groupId}/administrators/{id}:
-    delete:
-      summary: Remove an Administrator from a group
-      tags:
-        - Administrators
-      parameters:
-        - name: groupId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Administrator removed from group
   /templates:
     get:
       summary: Get a list of templates
@@ -804,6 +778,11 @@ components:
         id:
           type: string
           description: Id of the Administrator Group
+        administrators:
+          type: array
+          items: 
+            type: string
+            
         name:
           type: string
           description: Name of the Administrator Group
