@@ -1,0 +1,830 @@
+openapi: 3.0.0
+info:
+  title: OnPage API
+  description: OpenAPI definition for managing dispatching, pages, contacts, administrators, templates, settings, and webhooks.
+  version: 1.0.0
+servers:
+  - url: https://api.onpage.com/rest/
+    description: Production API server
+paths:
+  /attachments:
+    get:
+      summary: Get a list of attachments
+      tags:
+        - Attachments
+      responses:
+        '200':
+          description: List of attachment IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID of the attachment
+    post:
+      summary: Upload a new attachment
+      tags:
+        - Attachments
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Attachment uploaded successfully or failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates whether the upload was successful
+                  id:
+                    type: string
+                    description: The ID of the uploaded attachment (if successful)
+                  message:
+                    type: string
+                    description: Error message (if failed)
+  /attachments/{id}:
+    delete:
+      summary: Delete an attachment
+      tags:
+        - Attachments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Attachment deleted successfully
+        '404':
+          description: Attachment not found
+  /pages:
+    get:
+      summary: Get a list of pages
+      tags:
+        - Pages
+      parameters:
+        - name: Search
+          in: query
+          required: false
+          schema:
+            type: string
+            description: The search string to look for in the subject, body, or recipients
+      responses:
+        '200':
+          description: List of pages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Page'
+    post:
+      summary: Create a page
+      tags:
+        - Pages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Page'
+      responses:
+        '201':
+          description: Page created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+        '400':
+          description: Invalid request
+  /pages/{id}:
+    get:
+      summary: Get details of a specific page
+      tags:
+        - Pages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Details of the page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+  /pages/{id}/replies:
+    post:
+      summary: Post a reply to a page
+      tags:
+        - Pages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reply:
+                  type: string
+                  description: The content of the reply
+      responses:
+        '201':
+          description: Reply posted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reply'
+  /contacts:
+    get:
+      summary: Get a list of contacts
+      tags:
+        - Contacts
+      parameters: 
+        - name: Search
+          in: query
+          required: false
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: List of contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+    post:
+      summary: Create a recipient
+      tags:
+        - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      responses:
+        '201':
+          description: Recipient created successfully
+  /contacts/status:
+    get:
+      summary: Get contact status
+      tags:
+        - Contacts
+      responses:
+        '200':
+          description: Contact status overview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  online:
+                    type: array
+                    items:
+                      type: string
+                  pagersTurnedOff:
+                    type: array
+                    items:
+                      type: string
+                  offline:
+                    type: array
+                    items:
+                      type: string
+  /contacts/{id}:
+    put:
+      summary: Update a recipient
+      tags:
+        - Contacts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      responses:
+        '200':
+          description: Recipient updated successfully
+    delete:
+      summary: Delete a recipient
+      tags:
+        - Contacts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recipient deleted successfully
+  /contacts/groups:
+    get:
+      summary: Get groups of contacts
+      tags:
+        - Contacts
+      responses:
+        '200':
+          description: List of recipient groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+    post:
+      summary: Create a group
+      tags:
+        - Contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '201':
+          description: Group created successfully
+  /contacts/groups/{groupId}:
+    put:
+      summary: Update a group
+      tags:
+        - Contacts
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '200':
+          description: Group updated successfully
+    patch:
+      summary: Update a group
+      tags:
+        - Contacts
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                op:
+                  type: string
+                  enum: [add, remove]
+                path:
+                  type: string
+                  example: contacts
+                value:
+                  type: string
+                  example: opid
+      responses:
+        '200':
+          description: Group updated Successfully
+    delete:
+      summary: Delete a group
+      tags:
+        - Contacts
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Group deleted successfully
+  /administrators:
+    get:
+      summary: Get a list of administrators
+      tags:
+        - Administrators
+      responses:
+        '200':
+          description: List of administrators
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Administrator'
+    post:
+      summary: Create an administrator
+      tags:
+        - Administrators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Administrator'
+      responses:
+        '201':
+          description: Administrator created successfully
+  /administrators/{id}:
+    put:
+      summary: Update an administrator
+      tags:
+        - Administrators
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Administrator'
+      responses:
+        '200':
+          description: Administrator updated successfully
+    delete:
+      summary: Delete an administrator
+      tags:
+        - Administrators
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Administrator deleted successfully
+  /administrators/groups:
+    get:
+      summary: Get a list of administrators groups
+      tags:
+        - Administrators
+      responses:
+        '200':
+          description: List of administrators groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/AdministratorGroup'
+    post:
+      summary: Create an administrator group
+      tags:
+        - Administrators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdministratorGroup'
+      responses:
+        '201':
+          description: Administrator Group created successfully
+  /administrators/groups/{groupId}:
+    put:
+      summary: Update an administrator group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdministratorGroup'
+      responses:
+        '200':
+          description: Administrator Group updated successfully
+    patch:
+      summary: Update an administrator group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                op:
+                  type: string
+                  enum: [add, remove]
+                path:
+                  type: string
+                  example: administrators
+                value:
+                  type: string
+                  example: opid
+      responses:
+        '200':
+          description: Group updated Successfully
+    delete:
+      summary: Delete an administrator group
+      tags:
+        - Administrators
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Administrator Group deleted successfully
+        '404':
+          description: Administrator Group not found
+  /templates:
+    get:
+      summary: Get a list of templates
+      tags:
+        - Templates
+      responses:
+        '200':
+          description: List of templates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+    post:
+      summary: Create a template
+      tags:
+        - Templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Template'
+      responses:
+        '201':
+          description: Template created successfully
+  /templates/{id}:
+    put:
+      summary: Update a template
+      tags:
+        - Templates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Template'
+      responses:
+        '200':
+          description: Template updated successfully
+    delete:
+      summary: Delete a template
+      tags:
+        - Templates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Template deleted successfully
+  /settings:
+    get:
+      summary: Get settings
+      tags:
+        - Settings
+      responses:
+        '200':
+          description: Current settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+    put:
+      summary: Update settings
+      tags:
+        - Settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Setting'
+      responses:
+        '200':
+          description: Settings updated successfully
+components:
+  schemas:
+    Page:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: Message subject
+        body:
+          type: string
+          description: Message body (optional)
+        contacts:
+          type: array
+          items:
+            type: object
+            properties:
+              contactId:
+                type: string
+                description: Contact OPID
+              email:
+                type: string
+                description: Contact Email
+          description: List of Contacts (OPIDs)
+        from:
+          type: string
+          description: Message sender (free text, optional)
+        priority:
+          type: string
+          enum: [HIGH, LOW]
+          description: HIGH or LOW priority
+        attachments:
+          type: array
+          items:
+            type: string
+          description: Array of uploaded attachment IDs (optional)
+        possibleAnswers:
+          type: array
+          items:
+            type: string
+          description: Array of predefined answers for reply (optional, requires callbackUri)
+        callbackUri:
+          type: string
+          description: Message status callback URI (optional)
+        replies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reply'
+    Reply:
+      type: object
+      properties:
+        replyId:
+          type: string
+          description: The ID of the reply
+        reply:
+          type: string
+          description: The content of the reply
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the contact
+        opid:
+          type: string
+          description: OnPage ID for the contact
+        email:
+          type: string
+          format: email
+          description: Email address of the contact
+        status:
+          type: string
+          enum: [Online, TurnedOff, Offline]
+          description: Contact's Pager Status
+        firstName:
+          type: string
+          description: First name of the contact
+        lastName:
+          type: string
+          description: Last name of the contact
+        phoneNumber:
+          type: string
+          description: Phone number of the contact
+        groups:
+          type: array
+          items:
+            type: string
+          description: List of groups the contact belongs to
+        securedMessaging:
+          type: boolean
+          description: Indicates if secured messaging is enabled for the contact
+        sendRedundancy:
+          type: string
+          enum: [email, sms, ivr]
+          description: Redundancy method for secured messaging (if enabled)
+        sendRedundancyTime:
+          type: string
+          description: Time interval for redundancy in secured messaging
+        alwaysSendMessageCopy:
+          type: string
+          enum: [email, ivr]
+          description: Preferred method to always send a copy of the message
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the group
+        opid:
+          type: string
+          description: OnPage ID for the group
+        name:
+          type: string
+          description: Name of the group
+        contacts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of the contact
+              email:
+                type: string
+                format: email
+                description: Email of the contact
+          description: Array of contacts belonging to the group
+        escalation:
+          type: boolean
+          description: Indicates if escalation is enabled for the group
+        failoverInterval:
+          type: integer
+          description: Failover interval in minutes
+        failoverFactor:
+          type: string
+          enum: [delivered, read, replied]
+          description: Failover factor condition
+        sendFailReportTo:
+          type: string
+          format: email
+          description: Email to send fail reports
+        includeOriginalMessage:
+          type: boolean
+          description: Indicates if the original message should be included in failover notifications
+    Administrator:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the administrator
+        email:
+          type: string
+          format: email
+          description: Email address of the administrator
+        firstName:
+          type: string
+          description: First name of the administrator
+        lastName:
+          type: string
+          description: Last name of the administrator
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdministratorGroup'
+        superAdmin:
+          type: boolean
+          description: Indicates if the administrator has super admin privileges
+        phoneNumber:
+          type: string
+          description: Phone number of the administrator
+        canSelectAllContactsGroups:
+          type: boolean
+          description: Indicates if the administrator can select all contact groups
+        viewAllDispatchersContent:
+          type: boolean
+          description: Indicates if the administrator can view all dispatchers' content
+        permissions:
+          type: object
+          properties:
+            createGroup:
+              type: boolean
+              description: Permission to create groups
+            createEscalation:
+              type: boolean
+              description: Permission to create escalations
+            groupCreate:
+              type: boolean
+              description: Permission to create a group
+            contactDelete:
+              type: boolean
+              description: Permission to delete contacts
+            contactEdit:
+              type: boolean
+              description: Permission to edit contacts
+            contactAdd:
+              type: boolean
+              description: Permission to add contacts
+            contactToGroup:
+              type: boolean
+              description: Permission to add contacts to a group
+            removeContactFromGroup:
+              type: boolean
+              description: Permission to remove contacts from a group
+            deleteGroup:
+              type: boolean
+              description: Permission to delete groups
+            editGroup:
+              type: boolean
+              description: Permission to edit groups
+            editEscalationGroup:
+              type: boolean
+              description: Permission to edit escalation groups
+            viewSchedule:
+              type: boolean
+              description: Permission to view schedules
+            editSchedule:
+              type: boolean
+              description: Permission to edit schedules
+            viewReports:
+              type: boolean
+              description: Permission to view reports
+    AdministratorGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the Administrator Group
+        administrators:
+          type: array
+          items: 
+            type: string
+            
+        name:
+          type: string
+          description: Name of the Administrator Group
+    Setting:
+      type: object
+      properties:
+        onCallReminder:
+          type: string
+          enum: [Never, "30 Minutes", "60 Minutes"]
+          description: Reminder setting for on-call notifications
+        twoFactorRequired:
+          type: string
+          enum: ["Once per day", "Every Login", "Every 8 Hours"]
+          description: Frequency of two-factor authentication requirements
+    Template:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the template
+        syncToMobileDevices:
+          type: boolean
+          description: Indicates if the template is synced to mobile devices
+        subject:
+          type: string
+          description: Subject of the template
+        body:
+          type: string
+          description: Body content of the template
+        predefinedReplies:
+          type: array
+          items:
+            type: string
+          description: Array of predefined replies for the template
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []

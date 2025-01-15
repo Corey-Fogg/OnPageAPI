@@ -1,0 +1,561 @@
+openapi: 3.0.0
+info:
+  title: BlastIT Public API
+  version: "1.0.0"
+  description: API for managing departments, members, templates, and messages in BlastIT.
+paths:
+  /departments:
+    get:
+      tags:
+        - Departments
+      summary: Retrieve all departments
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
+      responses:
+        '200':
+          description: A list of departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+    post:
+      tags:
+        - Departments
+      summary: Create a new department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Department'
+      responses:
+        '201':
+          description: Department created successfully
+  /departments/{id}:
+    get:
+      tags:
+        - Departments
+      summary: Retrieve a single department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Department details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+    put:
+      tags:
+        - Departments
+      summary: Update a department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Department'
+      responses:
+        '200':
+          description: Department updated successfully
+    patch:
+      tags:
+        - Departments
+      summary: Partially update a department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                op:
+                  type: string
+                  enum: [add, remove]
+                path:
+                  type: string
+                  example: members
+                value:
+                  type: string
+                  example: email
+      responses:
+        '200':
+          description: Department partially updated successfully
+    delete:
+      tags:
+        - Departments
+      summary: Delete a department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Department deleted successfully
+  /members:
+    get:
+      tags:
+        - Members
+      summary: Retrieve all members
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
+      responses:
+        '200':
+          description: A list of members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
+    post:
+      tags:
+        - Members
+      summary: Create a new member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Member'
+      responses:
+        '201':
+          description: Member created successfully
+  /members/{id}:
+    get:
+      tags:
+        - Members
+      summary: Retrieve a single member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Member details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+    put:
+      tags:
+        - Members
+      summary: Update a member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Member'
+      responses:
+        '200':
+          description: Member updated successfully
+    patch:
+      tags:
+        - Members
+      summary: Partially update a member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                op:
+                  type: string
+                  enum: [add, remove]
+                path:
+                  type: string
+                  example: departments
+                value:
+                  type: string
+                  example: email
+      responses:
+        '200':
+          description: Member partially updated successfully
+    delete:
+      tags:
+        - Members
+      summary: Delete a member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Member deleted successfully
+  /templates:
+    get:
+      tags:
+        - Templates
+      summary: Retrieve all templates
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
+      responses:
+        '200':
+          description: A list of templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Template'
+    post:
+      tags:
+        - Templates
+      summary: Create a new template
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Template'
+      responses:
+        '201':
+          description: Template created successfully
+  /templates/{id}:
+    get:
+      tags:
+        - Templates
+      summary: Retrieve a single template
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Template details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+    put:
+      tags:
+        - Templates
+      summary: Update a template
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Template'
+      responses:
+        '200':
+          description: Template updated successfully
+    patch:
+      tags:
+        - Templates
+      summary: Partially update a template
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                op:
+                  type: string
+                  enum: [add, remove]
+                path:
+                  type: string
+                  example: body
+                value:
+                  type: string
+                  example: lorem ipsum
+      responses:
+        '200':
+          description: Template partially updated successfully
+    delete:
+      tags:
+        - Templates
+      summary: Delete a template
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Template deleted successfully
+  /messages:
+    get:
+      tags:
+        - Messages
+      summary: Retrieve all messages
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
+      responses:
+        '200':
+          description: A list of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+    post:
+      tags:
+        - Messages
+      summary: Create a new message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '201':
+          description: Message created successfully
+components:
+  schemas:
+    Department:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the department
+        name:
+          type: string
+          description: Name of the department
+        members:
+          type: array
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+                description: Email of the member
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the member
+        firstName:
+          type: string
+          description: First name of the member
+        lastName:
+          type: string
+          description: Last name of the member
+        contactInfo:
+          type: object
+          properties:
+            primaryEmail:
+              type: string
+              description: Primary email address
+            secondaryEmail:
+              type: string
+              description: Secondary email address
+            phoneNumber:
+              type: string
+              description: Phone number
+            mobileNumber:
+              type: string
+              description: Mobile number
+        addressInfo:
+          type: object
+          properties:
+            country:
+              type: string
+            state:
+              type: string
+            city:
+              type: string
+            street:
+              type: string
+            zip:
+              type: string
+        departments:
+          type: array
+          items:
+            type: string
+            description: Name of the department
+    Template:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the template
+        name:
+          type: string
+          description: Subject of the template
+        subject:
+          type: string
+          description: Subject of the template
+        content:
+          type: string
+          description: Body of the template
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the message
+        recipients:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the recipient
+              email:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: Email address
+                  acknowledgedAt:
+                    type: string
+                    format: date-time
+                    description: Acknowledgment timestamp
+              secondaryEmail:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: Secondary email address
+                  acknowledgedAt:
+                    type: string
+                    format: date-time
+                    description: Acknowledgment timestamp
+              phoneNumber:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: Phone number
+                  acknowledgedAt:
+                    type: string
+                    format: date-time
+                    description: Acknowledgment timestamp
+              mobileSMS:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: Mobile number for SMS
+                  acknowledgedAt:
+                    type: string
+                    format: date-time
+                    description: Acknowledgment timestamp
+              replies:
+                type: integer
+                description: Number of replies
+        subject:
+          type: string
+          description: Subject of the message
+        message:
+          type: string
+          description: Content of the message
+        replyOptions:
+          type: array
+          items:
+            type: string
+        sendPrimaryEmail:
+          type: boolean
+        sendSecondaryEmail:
+          type: boolean
+        sendSMS:
+          type: boolean
+        sendPhoneCall:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the message was created
