@@ -3,7 +3,7 @@ window.onload = function () {
     dom_id: '#swagger-ui',
     urls: [
       { name: 'OnPage Public API', url: 'OnPage Public API.yaml' },
-      { name: 'BlastIT', url: 'BlastIT Public API.yaml' },
+      { name: 'BlastIT Public API', url: 'BlastIT Public API.yaml' },
     ],
     deepLinking: true,
     presets: [
