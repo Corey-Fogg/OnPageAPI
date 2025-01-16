@@ -3,6 +3,9 @@ info:
   title: BlastIT Public API
   version: "1.0.0"
   description: API for managing departments, members, templates, and messages in BlastIT.
+servers:
+  - url: https://api.blastitonline.com.com/rest/
+    description: Production API server
 paths:
   /departments:
     get:
@@ -559,3 +562,10 @@ components:
           type: string
           format: date-time
           description: Timestamp when the message was created
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
