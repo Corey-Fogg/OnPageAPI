@@ -47,6 +47,10 @@ paths:
       responses:
         '201':
           description: Department created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
   /departments/{id}:
     get:
       tags:
@@ -65,25 +69,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Department'
-    put:
-      tags:
-        - Departments
-      summary: Update a department
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Department'
-      responses:
-        '200':
-          description: Department updated successfully
     patch:
       tags:
         - Departments
@@ -113,6 +98,10 @@ paths:
       responses:
         '200':
           description: Department partially updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
     delete:
       tags:
         - Departments
@@ -166,6 +155,10 @@ paths:
       responses:
         '201':
           description: Member created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
   /members/{id}:
     get:
       tags:
@@ -203,6 +196,10 @@ paths:
       responses:
         '200':
           description: Member updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
     patch:
       tags:
         - Members
@@ -232,6 +229,10 @@ paths:
       responses:
         '200':
           description: Member partially updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
     delete:
       tags:
         - Members
@@ -285,6 +286,10 @@ paths:
       responses:
         '201':
           description: Template created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
   /templates/{id}:
     get:
       tags:
@@ -322,6 +327,10 @@ paths:
       responses:
         '200':
           description: Template updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
     patch:
       tags:
         - Templates
@@ -351,6 +360,10 @@ paths:
       responses:
         '200':
           description: Template partially updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
     delete:
       tags:
         - Templates
@@ -404,14 +417,21 @@ paths:
       responses:
         '201':
           description: Message created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
 components:
   schemas:
     Department:
       type: object
+      required:
+        - name
       properties:
         id:
           type: string
           description: Unique identifier for the department
+          readOnly: true
         name:
           type: string
           description: Name of the department
@@ -425,10 +445,14 @@ components:
                 description: Email of the member
     Member:
       type: object
+      required:
+        - firstName
+        - lastName
       properties:
         id:
           type: string
           description: Unique identifier for the member
+          readOnly: true
         firstName:
           type: string
           description: First name of the member
@@ -437,6 +461,8 @@ components:
           description: Last name of the member
         contactInfo:
           type: object
+          required:
+            - primaryEmail
           properties:
             primaryEmail:
               type: string
@@ -470,25 +496,35 @@ components:
             description: Name of the department
     Template:
       type: object
+      required:
+        - name
+        - subject
+        - body
       properties:
         id:
           type: string
           description: Unique identifier for the template
+          readOnly: true
         name:
           type: string
           description: Subject of the template
         subject:
           type: string
           description: Subject of the template
-        content:
+        body:
           type: string
           description: Body of the template
     Message:
       type: object
+      required:
+        - recipients
+        - subject
+        - message
       properties:
         id:
           type: string
           description: Unique identifier for the message
+          readOnly: true
         recipients:
           type: array
           items:
@@ -507,6 +543,7 @@ components:
                     type: string
                     format: date-time
                     description: Acknowledgment timestamp
+                    readOnly: true
               secondaryEmail:
                 type: object
                 properties:
@@ -517,6 +554,7 @@ components:
                     type: string
                     format: date-time
                     description: Acknowledgment timestamp
+                    readOnly: true
               phoneNumber:
                 type: object
                 properties:
@@ -527,6 +565,7 @@ components:
                     type: string
                     format: date-time
                     description: Acknowledgment timestamp
+                    readOnly: true
               mobileSMS:
                 type: object
                 properties:
@@ -537,9 +576,11 @@ components:
                     type: string
                     format: date-time
                     description: Acknowledgment timestamp
+                    readOnly: true
               replies:
                 type: integer
                 description: Number of replies
+                readOnly: true
         subject:
           type: string
           description: Subject of the message
@@ -559,6 +600,7 @@ components:
         sendPhoneCall:
           type: boolean
         createdAt:
+          readOnly: true
           type: string
           format: date-time
           description: Timestamp when the message was created
