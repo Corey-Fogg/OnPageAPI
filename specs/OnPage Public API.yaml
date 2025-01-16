@@ -620,6 +620,7 @@ components:
           description: Message status callback URI (optional)
         replies:
           type: array
+          readOnly: true
           items:
             $ref: '#/components/schemas/Reply'
         emailedList:
@@ -896,14 +897,14 @@ components:
     Attachments:
       type: object
       properties:
-        success:
-          type: boolean
-          readOnly: true
-          description: Indicates whether the upload was successful
         id:
           type: string
           description: The ID of the uploaded attachment (if successful)
           readOnly: true
+        success:
+          type: boolean
+          readOnly: true
+          description: Indicates whether the upload was successful
         message:
           type: string
           description: Error message (if failed)
