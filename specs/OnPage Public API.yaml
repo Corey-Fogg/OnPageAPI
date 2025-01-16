@@ -18,13 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: ID of the attachment
+                $ref: '#/components/schemas/Attachments'
     post:
       summary: Upload a new attachment
       tags:
@@ -44,17 +38,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    description: Indicates whether the upload was successful
-                  id:
-                    type: string
-                    description: The ID of the uploaded attachment (if successful)
-                  message:
-                    type: string
-                    description: Error message (if failed)
+                $ref: '#/components/schemas/Attachments'
   /attachments/{id}:
     delete:
       summary: Delete an attachment
@@ -176,7 +160,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Contact'
     post:
-      summary: Create a recipient
+      summary: Create a Contact
       tags:
         - Contacts
       requestBody:
@@ -186,7 +170,11 @@ paths:
               $ref: '#/components/schemas/Contact'
       responses:
         '201':
-          description: Recipient created successfully
+          description: Contact created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
   /contacts/status:
     get:
       summary: Get contact status
@@ -214,7 +202,7 @@ paths:
                       type: string
   /contacts/{id}:
     put:
-      summary: Update a recipient
+      summary: Update a Contact
       tags:
         - Contacts
       parameters:
@@ -230,9 +218,13 @@ paths:
               $ref: '#/components/schemas/Contact'
       responses:
         '200':
-          description: Recipient updated successfully
+          description: Contact updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
     delete:
-      summary: Delete a recipient
+      summary: Delete a Contact
       tags:
         - Contacts
       parameters:
@@ -243,7 +235,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Recipient deleted successfully
+          description: Contact deleted successfully
   /contacts/groups:
     get:
       summary: Get groups of contacts
@@ -251,7 +243,7 @@ paths:
         - Contacts
       responses:
         '200':
-          description: List of recipient groups
+          description: List of contact groups
           content:
             application/json:
               schema:
@@ -270,6 +262,10 @@ paths:
       responses:
         '201':
           description: Group created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
   /contacts/groups/{groupId}:
     put:
       summary: Update a group
@@ -289,6 +285,10 @@ paths:
       responses:
         '200':
           description: Group updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
     patch:
       summary: Update a group
       tags:
@@ -303,20 +303,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties: 
-                op:
-                  type: string
-                  enum: [add, remove]
-                path:
-                  type: string
-                  example: contacts
-                value:
-                  type: string
-                  example: opid
+              $ref: '#/components/schemas/PatchObject'
       responses:
         '200':
           description: Group updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
     delete:
       summary: Delete a group
       tags:
@@ -356,6 +350,10 @@ paths:
       responses:
         '201':
           description: Administrator created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Administrator'
   /administrators/{id}:
     put:
       summary: Update an administrator
@@ -375,6 +373,10 @@ paths:
       responses:
         '200':
           description: Administrator updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Administrator'
     delete:
       summary: Delete an administrator
       tags:
@@ -414,6 +416,10 @@ paths:
       responses:
         '201':
           description: Administrator Group created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdministratorGroup'
   /administrators/groups/{groupId}:
     put:
       summary: Update an administrator group
@@ -433,6 +439,10 @@ paths:
       responses:
         '200':
           description: Administrator Group updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdministratorGroup'
     patch:
       summary: Update an administrator group
       tags:
@@ -447,20 +457,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties: 
-                op:
-                  type: string
-                  enum: [add, remove]
-                path:
-                  type: string
-                  example: administrators
-                value:
-                  type: string
-                  example: opid
+              $ref: '#/components/schemas/PatchObject'
       responses:
         '200':
           description: Group updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdministratorGroup'
     delete:
       summary: Delete an administrator group
       tags:
@@ -500,6 +504,10 @@ paths:
       responses:
         '201':
           description: Template created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
   /templates/{id}:
     put:
       summary: Update a template
@@ -519,6 +527,10 @@ paths:
       responses:
         '200':
           description: Template updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
     delete:
       summary: Delete a template
       tags:
@@ -556,32 +568,39 @@ paths:
       responses:
         '200':
           description: Settings updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
 components:
   schemas:
     Page:
       type: object
+      required:
+        - subject
+        - recipients
+        - priority
       properties:
+        id: 
+          type: string
+          description: Message ID
+          readOnly: true
         subject:
           type: string
           description: Message subject
         body:
           type: string
           description: Message body (optional)
-        contacts:
+        recipients:
           type: array
           items:
-            type: object
-            properties:
-              contactId:
-                type: string
-                description: Contact OPID
-              email:
-                type: string
-                description: Contact Email
-          description: List of Contacts (OPIDs)
+            type: string
+            description: OnPage IDs for recipients, could be Contact or Group
+          description: List of Recipients by OnPage ID
         from:
+          readOnly: true
           type: string
-          description: Message sender (free text, optional)
+          description: Message sender
         priority:
           type: string
           enum: [HIGH, LOW]
@@ -603,24 +622,43 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Reply'
+        emailedList:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            description: List of recipient emails
+        createdDate:
+          type: string
+          readOnly: true
     Reply:
       type: object
+      required:
+        - body
       properties:
-        replyId:
+        id:
           type: string
           description: The ID of the reply
-        reply:
+          readOnly: true
+        body:
           type: string
           description: The content of the reply
     Contact:
       type: object
+      required:
+        - onpageId
+        - firstName
+        - lastName
+        - phoneNumber
+        - email
       properties:
         id:
           type: string
           description: Unique identifier for the contact
-        opid:
+          readOnly: true
+        onpageId:
           type: string
-          description: OnPage ID for the contact
+          description: OnPage Id for the contact
         email:
           type: string
           format: email
@@ -659,13 +697,17 @@ components:
           description: Preferred method to always send a copy of the message
     Group:
       type: object
+      required:
+        - name
+        - onpageId
       properties:
         id:
           type: string
           description: Unique identifier for the group
-        opid:
+          readOnly: true
+        onpageId:
           type: string
-          description: OnPage ID for the group
+          description: OnPage Id for the group
         name:
           type: string
           description: Name of the group
@@ -674,9 +716,9 @@ components:
           items:
             type: object
             properties:
-              id:
+              onpageId:
                 type: string
-                description: ID of the contact
+                description: OnPage Id of the contact
               email:
                 type: string
                 format: email
@@ -701,10 +743,15 @@ components:
           description: Indicates if the original message should be included in failover notifications
     Administrator:
       type: object
+      required:
+        - firstName
+        - lastName
+        - email
       properties:
         id:
           type: string
           description: Unique identifier for the administrator
+          readOnly: true
         email:
           type: string
           format: email
@@ -778,15 +825,17 @@ components:
               description: Permission to view reports
     AdministratorGroup:
       type: object
+      required:
+        - name
       properties:
         id:
           type: string
           description: Id of the Administrator Group
+          readOnly: true
         administrators:
           type: array
           items: 
-            type: string
-            
+            type: string            
         name:
           type: string
           description: Name of the Administrator Group
@@ -803,7 +852,14 @@ components:
           description: Frequency of two-factor authentication requirements
     Template:
       type: object
+      required:
+        - name
+        - subject
       properties:
+        id: 
+          type: string
+          description: Id of the Template
+          readOnly: true
         name:
           type: string
           description: Name of the template
@@ -821,6 +877,37 @@ components:
           items:
             type: string
           description: Array of predefined replies for the template
+    PatchObject:
+      type: object
+      required:
+        - op
+        - path
+        - value
+      properties: 
+        op:
+          type: string
+          enum: [add, remove]
+        path:
+          type: string
+          example: administrators
+        value:
+          type: string
+          example: onpageId
+    Attachments:
+      type: object
+      properties:
+        success:
+          type: boolean
+          readOnly: true
+          description: Indicates whether the upload was successful
+        id:
+          type: string
+          description: The ID of the uploaded attachment (if successful)
+          readOnly: true
+        message:
+          type: string
+          description: Error message (if failed)
+          readOnly: true
   securitySchemes:
     bearerAuth:
       type: http
