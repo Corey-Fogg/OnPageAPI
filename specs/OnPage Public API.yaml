@@ -64,10 +64,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Attachment deleted successfully
         '404':
-          description: Attachment not found
+          description: Record not found
   /pages:
     get:
       summary: Get a list of pages
@@ -137,6 +137,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Page'
+        '404':
+          description: Record not found
   /pages/{id}/replies:
     post:
       summary: Post a reply to a page
@@ -164,6 +166,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Reply'
+        '404':
+          description: Record not found
   /contacts:
     get:
       summary: Get a list of contacts
@@ -260,6 +264,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Contact'
+        '404':
+          description: Record not found
     delete:
       summary: Delete a Contact
       tags:
@@ -271,8 +277,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Contact deleted successfully
+        '404':
+          description: Record not found
   /contacts/groups:
     get:
       summary: Get groups of contacts
@@ -345,6 +353,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
+        '404':
+          description: Record not found
     patch:
       summary: Update a group
       tags:
@@ -367,6 +377,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
+        '404':
+          description: Record not found
     delete:
       summary: Delete a group
       tags:
@@ -378,8 +390,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Group deleted successfully
+        '404':
+          description: Record not found
   /administrators:
     get:
       summary: Get a list of administrators
@@ -452,6 +466,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Administrator'
+        '404':
+          description: Record not found
     delete:
       summary: Delete an administrator
       tags:
@@ -463,8 +479,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Administrator deleted successfully
+        '404':
+          description: Record not found
   /administrators/groups:
     get:
       summary: Get a list of administrators groups
@@ -537,6 +555,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdministratorGroup'
+        '404':
+          description: Record not found
     patch:
       summary: Update an administrator group
       tags:
@@ -559,6 +579,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdministratorGroup'
+        '404':
+          description: Record not found
     delete:
       summary: Delete an administrator group
       tags:
@@ -570,7 +592,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Administrator Group deleted successfully
         '404':
           description: Administrator Group not found
@@ -644,6 +666,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Template'
+        '404':
+          description: Record not found
     delete:
       summary: Delete a template
       tags:
@@ -655,8 +679,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Template deleted successfully
+        '404':
+          description: Record not found
   /settings:
     get:
       summary: Get settings

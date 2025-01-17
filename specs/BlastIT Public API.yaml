@@ -69,6 +69,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Department'
+        '404':
+          description: Record not found
     patch:
       tags:
         - Departments
@@ -102,6 +104,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Department'
+        '404':
+          description: Record not found
     delete:
       tags:
         - Departments
@@ -115,6 +119,8 @@ paths:
       responses:
         '204':
           description: Department deleted successfully
+        '404':
+          description: Record not found
   /members:
     get:
       tags:
@@ -159,6 +165,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Member'
+  /members/bulk:
+    post:
+      tags:
+        - Members
+      summary: Create bulk new members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Member'
+      responses:
+        '201':
+          description: Members created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
+        '207':
+          description: Not all Members created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
   /members/{id}:
     get:
       tags:
@@ -177,6 +213,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Member'
+        '404':
+          description: Record not found
     put:
       tags:
         - Members
@@ -200,6 +238,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Member'
+        '404':
+          description: Record not found
     patch:
       tags:
         - Members
@@ -233,6 +273,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Member'
+        '404':
+          description: Record not found
     delete:
       tags:
         - Members
@@ -246,6 +288,8 @@ paths:
       responses:
         '204':
           description: Member deleted successfully
+        '404':
+          description: Record not found
   /templates:
     get:
       tags:
@@ -308,6 +352,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Template'
+        '404':
+          description: Record not found
     put:
       tags:
         - Templates
@@ -331,6 +377,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Template'
+        '404':
+          description: Record not found
     patch:
       tags:
         - Templates
@@ -364,6 +412,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Template'
+        '404':
+          description: Record not found
     delete:
       tags:
         - Templates
@@ -377,6 +427,8 @@ paths:
       responses:
         '204':
           description: Template deleted successfully
+        '404':
+          description: Record not found
   /messages:
     get:
       tags:
@@ -443,6 +495,21 @@ components:
               email:
                 type: string
                 description: Email of the member
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    Metadata:
+      type: object
+      readOnly: true
+      properties:
+        limit:
+          type: string
+          description: Limit of records returned for pagination
+        offset:
+          type: string
+          description: Starting position of the pagination
+        count:
+          type: string
+          description: Number of records
     Member:
       type: object
       required:
@@ -494,6 +561,8 @@ components:
           items:
             type: string
             description: Name of the department
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     Template:
       type: object
       required:
@@ -514,6 +583,8 @@ components:
         body:
           type: string
           description: Body of the template
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     Message:
       type: object
       required:
@@ -604,6 +675,8 @@ components:
           type: string
           format: date-time
           description: Timestamp when the message was created
+        metadata:
+          $ref: '#/components/schemas/Metadata'
   securitySchemes:
     bearerAuth:
       type: http
