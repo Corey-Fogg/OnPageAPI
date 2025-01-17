@@ -67,7 +67,11 @@ paths:
         '204':
           description: Attachment deleted successfully
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /pages:
     get:
       summary: Get a list of pages
@@ -137,8 +141,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Page'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /pages/{id}/replies:
     post:
       summary: Post a reply to a page
@@ -166,8 +180,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Reply'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /contacts:
     get:
       summary: Get a list of contacts
@@ -219,6 +243,14 @@ paths:
   /contacts/status:
     get:
       summary: Get contact status
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [Online, Offline, TurnedOff]
+        description: Filter contacts by status
       tags:
         - Contacts
       responses:
@@ -227,20 +259,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  online:
-                    type: array
-                    items:
-                      type: string
-                  pagersTurnedOff:
-                    type: array
-                    items:
-                      type: string
-                  offline:
-                    type: array
-                    items:
-                      type: string
+                $ref: '#/components/schemas/Status'
   /contacts/{id}:
     put:
       summary: Update a Contact
@@ -264,8 +283,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Contact'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       summary: Delete a Contact
       tags:
@@ -280,7 +309,11 @@ paths:
         '204':
           description: Contact deleted successfully
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /contacts/groups:
     get:
       summary: Get groups of contacts
@@ -353,8 +386,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     patch:
       summary: Update a group
       tags:
@@ -377,8 +420,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       summary: Delete a group
       tags:
@@ -393,7 +446,11 @@ paths:
         '204':
           description: Group deleted successfully
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /administrators:
     get:
       summary: Get a list of administrators
@@ -466,8 +523,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Administrator'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       summary: Delete an administrator
       tags:
@@ -482,7 +549,11 @@ paths:
         '204':
           description: Administrator deleted successfully
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /administrators/groups:
     get:
       summary: Get a list of administrators groups
@@ -555,8 +626,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdministratorGroup'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     patch:
       summary: Update an administrator group
       tags:
@@ -579,8 +660,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdministratorGroup'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       summary: Delete an administrator group
       tags:
@@ -666,8 +757,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Template'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Record not found
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       summary: Delete a template
       tags:
@@ -1078,6 +1179,33 @@ components:
           readOnly: true
         metadata:
           $ref: '#/components/schemas/Metadata'
+    Status:
+      type: object
+      properties:
+        online:
+          type: array
+          items:
+            type: string
+        pagersTurnedOff:
+          type: array
+          items:
+            type: string
+        offline:
+          type: array
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: Error code for identifying the issue
+        message:
+          type: string
+          description: A user-friendly error message
+        details:
+          type: object
+          description: Additional details about the error
   securitySchemes:
     bearerAuth:
       type: http
