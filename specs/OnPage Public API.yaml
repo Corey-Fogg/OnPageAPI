@@ -10,6 +10,19 @@ paths:
   /attachments:
     get:
       summary: Get a list of attachments
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
       tags:
         - Attachments
       responses:
@@ -61,12 +74,24 @@ paths:
       tags:
         - Pages
       parameters:
-        - name: Search
+        - name: search
           in: query
           required: false
           schema:
             type: string
             description: Search for pages by contact onpageId or email.
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination        
       responses:
         '200':
           description: List of pages
@@ -145,11 +170,23 @@ paths:
       tags:
         - Contacts
       parameters: 
-        - name: Search
+        - name: search
           in: query
           required: false
           schema: 
             type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination   
       responses:
         '200':
           description: List of contacts
@@ -240,12 +277,24 @@ paths:
     get:
       summary: Get groups of contacts
       parameters:
-        - name: Search
+        - name: search
           in: query
           required: false
           schema:
             type: string
             description: Search for groups by group onpageId.
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
       tags:
         - Contacts
       responses:
@@ -334,6 +383,25 @@ paths:
   /administrators:
     get:
       summary: Get a list of administrators
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Search for administrator by onpageId or email.
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
       tags:
         - Administrators
       responses:
@@ -400,6 +468,25 @@ paths:
   /administrators/groups:
     get:
       summary: Get a list of administrators groups
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Search for administrator groups by group name.
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
       tags:
         - Administrators
       responses:
@@ -490,6 +577,25 @@ paths:
   /templates:
     get:
       summary: Get a list of templates
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Search for groups by group onpageId.
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
       tags:
         - Templates
       responses:
@@ -642,6 +748,21 @@ components:
         createdDate:
           type: string
           readOnly: true
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    Metadata:
+      type: object
+      readOnly: true
+      properties:
+        limit:
+          type: string
+          description: Limit of records returned for pagination
+        offset:
+          type: string
+          description: Starting position of the pagination
+        count:
+          type: string
+          description: Number of records
     Reply:
       type: object
       required:
@@ -706,6 +827,8 @@ components:
           type: string
           enum: [email, ivr]
           description: Preferred method to always send a copy of the message
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     Group:
       type: object
       required:
@@ -752,6 +875,8 @@ components:
         includeOriginalMessage:
           type: boolean
           description: Indicates if the original message should be included in failover notifications
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     Administrator:
       type: object
       required:
@@ -834,6 +959,8 @@ components:
             viewReports:
               type: boolean
               description: Permission to view reports
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     AdministratorGroup:
       type: object
       required:
@@ -850,6 +977,8 @@ components:
         name:
           type: string
           description: Name of the Administrator Group
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     Setting:
       type: object
       properties:
@@ -888,6 +1017,8 @@ components:
           items:
             type: string
           description: Array of predefined replies for the template
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     PatchObject:
       type: object
       required:
@@ -919,6 +1050,8 @@ components:
           type: string
           description: Error message (if failed)
           readOnly: true
+        metadata:
+          $ref: '#/components/schemas/Metadata'
   securitySchemes:
     bearerAuth:
       type: http
